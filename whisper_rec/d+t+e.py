@@ -45,7 +45,7 @@ def emotion(file_path):
     else:
         return "Please provide the path to an audio file."
     
-# Step 1: Speaker Diarization (Limit to 2 speakers)
+# Step 1: Speaker Diarization (Limit to 1 speaker)
 diary_result = diary_pipeline(audio_file, num_speakers=1)
 speaker_segments = []
 for turn, _, speaker in diary_result.itertracks(yield_label=True):
@@ -67,10 +67,14 @@ output_dir = "speaker_clips_2"
 os.makedirs(output_dir, exist_ok=True)
 
 for idx, (start, end, speaker) in enumerate(speaker_segments):
-    speaker_text = ""
+    speaker_text = []
     for segment in transcription_segments:
         if start <= segment['start'] <= end:
-            speaker_text += segment['text'] + " "
+            speaker_text.append({
+                "text": segment['text'],
+                "start_time": segment['start'],
+                "end_time": segment['end']
+            })
 
     # Save audio segment
     start_ms = int(start * 1000)
@@ -82,8 +86,12 @@ for idx, (start, end, speaker) in enumerate(speaker_segments):
     # Emotion detection
     em = emotion(clip_path)
 
-    # Append text with emotion
-    output_text.append(f"Speaker {speaker}: \"{speaker_text.strip()}\" (audio emotion detected - {em})")
+    # Append text with emotion and timestamps
+    for sentence in speaker_text:
+        output_text.append(
+            f"Speaker {speaker}: \"{sentence['text'].strip()}\" "
+            f"(start: {sentence['start_time']:.2f}s, end: {sentence['end_time']:.2f}s, audio emotion detected - {em})"
+        )
 
 # Step 4: Save Output
 with open("conversation_output_with_emotions.txt", "w") as f:
