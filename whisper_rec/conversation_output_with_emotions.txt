@@ -1,0 +1,6 @@
+Speaker SPEAKER_01: "" (audio emotion detected - Neutral)
+Speaker SPEAKER_01: "" (audio emotion detected - Neutral)
+Speaker SPEAKER_01: "" (audio emotion detected - Neutral)
+Speaker SPEAKER_00: "What the hell are you saying?" (audio emotion detected - Angry)
+Speaker SPEAKER_01: "That's amazing." (audio emotion detected - Neutral)
+Speaker SPEAKER_01: "" (audio emotion detected - Angry)
