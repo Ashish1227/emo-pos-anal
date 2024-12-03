@@ -20,7 +20,7 @@ classifier = foreign_class(source="speechbrain/emotion-recognition-wav2vec2-IEMO
 emotion_classifier = EncoderClassifier.from_hparams(source="speechbrain/emotion-recognition-wav2vec2-IEMOCAP", savedir="tmp")
 
 # Input audio file
-audio_file = "/Users/ashishgatreddi/Desktop/face-emo/Facial-Emotion-Recognition-using-OpenCV-and-Deepface/recorded_audio.wav"
+audio_file = "/Users/ashishgatreddi/Desktop/emo-pos-anal/fer_deepface/recorded_audio.wav"
 
 def emotion(file_path):
    
@@ -63,7 +63,7 @@ transcription_segments = transcription_result['segments']
 # Step 3: Split Audio and Perform Emotion Analysis
 output_text = []
 audio = AudioSegment.from_wav(audio_file)
-output_dir = "speaker_clips_2"
+output_dir = "speaker_clips_3"
 os.makedirs(output_dir, exist_ok=True)
 
 for idx, (start, end, speaker) in enumerate(speaker_segments):
@@ -94,7 +94,7 @@ for idx, (start, end, speaker) in enumerate(speaker_segments):
         )
 
 # Step 4: Save Output
-with open("conversation_output_with_emotions.txt", "w") as f:
+with open("conversation_output_with_emotions2.txt", "w") as f:
     f.write("\n".join(output_text))
 
 print("Diarization, transcription, and emotion analysis complete!")

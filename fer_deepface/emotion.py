@@ -50,11 +50,12 @@ import cv2
 import mediapipe as mp
 import numpy as np
 from deepface import DeepFace
-import speech_recognition as sr  # For ASR
+# import speech_recognition as sr  # For ASR
 import pyaudio
 import wave
-import threading 
-
+import threading
+import pandas as pd
+import time
 # Initialize Mediapipe Pose and Drawing Utilities
 mp_pose = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
@@ -106,6 +107,10 @@ FORWARD_POSTURE_THRESHOLD = -0.2
 
 # Array to store shoulder data
 shoulder_data = []
+
+# List to store emotion data
+emotion_log = []
+start_time = time.time()
 
 # Start audio recording in a separate thread
 audio_recording = True
@@ -184,6 +189,15 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             except Exception as e:
                 emotion = "N/A"
 
+            # Calculate the relative timestamp
+            relative_timestamp = round(time.time() - start_time, 2)  # Seconds since start
+
+            # Log the emotion with the relative timestamp
+            emotion_log.append({
+                'timestamp': relative_timestamp,
+                'emotion': emotion
+            })
+
             # Draw rectangle and emotion label
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
             cv2.putText(frame, emotion, (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 255), 2, cv2.LINE_AA)
@@ -215,6 +229,10 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
 # Stop audio recording and save data
 audio_recording = False
 audio_thread.join()
+
+# Save emotion log to a CSV file
+emotion_df = pd.DataFrame(emotion_log)
+emotion_df.to_csv("relative_emotion_log.csv", index=False)
 
 # Save shoulder data to a CSV file
 shoulder_data = np.array(shoulder_data)
